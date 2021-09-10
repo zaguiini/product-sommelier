@@ -1,0 +1,17 @@
+{
+  "name": "gumroad-challenge",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Luis Felipe Zaguini",
+  "license": "MIT",
+  "scripts": {
+    "frontend:dev": "webpack serve --mode development --open",
+    "frontend:build": "webpack --mode production"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^5.3.2",
+    "webpack": "^5.52.1",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.2.0"
+  }
+}
