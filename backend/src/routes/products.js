@@ -50,4 +50,14 @@ productsRouter.get("/:productId", async (req, res) => {
   res.send(product);
 });
 
+productsRouter.post("/:productId/reviews", async (req, res) => {
+  const review = await Review.create({
+    productId: req.params.productId,
+    rating: req.body.rating,
+    description: req.body.description,
+  });
+
+  res.send(review);
+});
+
 module.exports.productsRouter = productsRouter;
