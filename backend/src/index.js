@@ -4,6 +4,8 @@ const { setupRoutes } = require("./routes");
 const setup = async () => {
   const app = express();
 
+  app.use(express.json());
+
   setupRoutes(app);
 
   app.listen(process.env.BACKEND_PORT, () => {

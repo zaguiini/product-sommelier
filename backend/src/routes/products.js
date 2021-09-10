@@ -13,7 +13,7 @@ const averageRatingColumn = [
   "averageRating",
 ];
 
-productsRouter.get("/", async (req, res) => {
+productsRouter.get("/", async (_, res) => {
   const products = await Product.findAll({
     attributes: {
       include: [averageRatingColumn],
@@ -21,6 +21,14 @@ productsRouter.get("/", async (req, res) => {
   });
 
   res.send(products);
+});
+
+productsRouter.post("/", async (req, res) => {
+  const review = await Product.create({
+    name: req.body.name,
+  });
+
+  res.send(review);
 });
 
 productsRouter.get("/:productId", async (req, res) => {
