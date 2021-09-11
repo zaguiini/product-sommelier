@@ -1,15 +1,18 @@
 const sequelize = require("sequelize");
+const db = require("../models");
 const express = require("express");
 const { Product, Review } = require("../models");
 
 const productsRouter = express.Router();
 
-const averageRatingColumn = [
-  sequelize.literal(`(
+const averageRatingColumnQuery = (productId) => `(
     SELECT COALESCE(AVG("Reviews"."rating"), 0)
     FROM "Reviews"
-    WHERE "Reviews"."productId" = "Product"."id"
-  )`),
+    WHERE "Reviews"."productId" = ${productId}
+  )`;
+
+const averageRatingColumn = [
+  sequelize.literal(averageRatingColumnQuery('"Product"."id"')),
   "averageRating",
 ];
 
@@ -57,7 +60,15 @@ productsRouter.post("/:productId/reviews", async (req, res) => {
     description: req.body.description,
   });
 
-  res.send(review);
+  const { coalesce: newAverageRating } = await db.sequelize.query(
+    averageRatingColumnQuery(req.params.productId),
+    {
+      plain: true,
+      type: sequelize.QueryTypes.SELECT,
+    },
+  );
+
+  res.send({ ...review.toJSON(), newAverageRating });
 });
 
 module.exports.productsRouter = productsRouter;

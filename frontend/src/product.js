@@ -35,6 +35,14 @@ const render = async ({ productId }) => {
     })
       .then((addedReview) => {
         toggleReviewForm();
+
+        reviewsContainer.prepend(reviewComponent(addedReview));
+
+        averageRatingContainer.replaceChildren(
+          productRating({
+            rating: addedReview.newAverageRating,
+          }),
+        );
       })
       .catch(() => {
         alert("Failed to add review.");
