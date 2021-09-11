@@ -5,8 +5,40 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product sommelier</title>
+  <style>
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app" class="hidden flex justify-center">
+    <div class="flex-1 max-w-2xl mt-24 mx-4">
+      <main class="flex flex-col">
+        <h1 id="product-title" class="text-4xl font-bold"></h1>
+        <div class="flex my-3 justify-between h-10">
+          <div id="average-rating" class="flex"></div>
+          <button id="add-review" class="px-4 py-2 bg-blue-600 rounded-md text-white outline-none focus:ring-4 flex">
+            Add review
+          </button>
+        </div>
+      </main>
+      <hr class="my-6" />
+      <form id="review-form" class="flex flex-col items-start hidden">
+        <h1 class="text-2xl font-bold">What's your rating?</h1>
+        <input type="hidden" name="rating" value="3" />
+        <div id="rating-picker" class="mt-4"></div>
+        <textarea required minlength="30" name="description" class="self-start w-full my-4" placeholder="Tell us what you think about it..."></textarea>
+        <button class="px-4 py-2 bg-blue-600 rounded-md text-white outline-none focus:ring-4 flex self-start">
+          Submit review
+        </button>
+        <hr class="my-6" />
+      </form>
+      <section>
+        <h2 class="text-xl font-bold">Reviews</h2>
+        <ul id="reviews-list" class="mt-3"></ul>
+      </section>
+    </div>
+  </div>
 </body>
 </html>
