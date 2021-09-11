@@ -7,7 +7,14 @@ import { text } from "./dom";
 const render = () => {
   const app = document.querySelector("#app");
   const averageRatingContainer = document.querySelector("#average-rating");
+  const addReviewButton = document.querySelector("#add-review");
+  const reviewForm = document.querySelector("#review-form");
   const productTitle = document.querySelector("#product-title");
+
+  addReviewButton.addEventListener("click", () => {
+    addReviewButton.classList.add("hidden");
+    reviewForm.classList.remove("hidden");
+  });
 
   const productName = "My product...";
 
