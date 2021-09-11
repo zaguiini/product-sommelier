@@ -55,6 +55,10 @@ productsRouter.get("/:productId", async (req, res) => {
 });
 
 productsRouter.post("/:productId/reviews", async (req, res) => {
+  if (!parseInt(req.params.productId, 10)) {
+    return res.send(400);
+  }
+
   const review = await Review.create({
     productId: req.params.productId,
     rating: req.body.rating,
