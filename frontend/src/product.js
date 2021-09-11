@@ -6,23 +6,63 @@ import { text } from "./dom";
 import { addReview, fetchProduct } from "./services/products";
 import { productRating } from "./components/productRating";
 
-const render = async ({ productId }) => {
-  const product = await fetchProduct({ id: productId });
+const DEFAULT_PICKER_VALUE = 3;
 
-  const app = document.querySelector("#app");
-  const averageRatingContainer = document.querySelector("#average-rating");
-  const addReviewButton = document.querySelector("#add-review");
-  const reviewForm = document.querySelector("#review-form");
+const setProductTitle = (title) => {
   const productTitle = document.querySelector("#product-title");
+
+  document.title = title + " - " + document.title;
+  productTitle.appendChild(text(title));
+};
+
+const insertReviews = (reviews, { prepend = false } = {}) => {
+  const reviewsContainer = document.querySelector("#reviews-list");
+
+  reviews.forEach((review) => {
+    const reviewNode = reviewComponent(review);
+    reviewsContainer[prepend ? "prepend" : "appendChild"](reviewNode);
+  });
+};
+
+const setProductRating = (averageRating) => {
+  const averageRatingContainer = document.querySelector("#average-rating");
+
+  averageRatingContainer.replaceChildren(
+    productRating({
+      rating: averageRating,
+    }),
+  );
+};
+
+const setRatingPickerOnForm = (defaultPickerValue) => {
   const ratingPicker = document.querySelector("#rating-picker");
   const ratingFormItem = document.querySelector("#review-form [name=rating]");
 
-  const toggleReviewForm = () => {
-    reviewForm.reset();
+  const onRatingPickerClick = (pickedRating) => {
+    ratingFormItem.value = pickedRating;
 
     ratingPicker.replaceChildren(
       rating({ amount: ratingFormItem.value, click: onRatingPickerClick }),
     );
+  };
+
+  onRatingPickerClick(defaultPickerValue);
+};
+
+const render = async ({ productId }) => {
+  const product = await fetchProduct({ id: productId });
+
+  const app = document.querySelector("#app");
+  const addReviewButton = document.querySelector("#add-review");
+  const reviewForm = document.querySelector("#review-form");
+
+  setProductTitle(product.name);
+  setProductRating(product.averageRating);
+  insertReviews(product.reviews);
+
+  const toggleReviewForm = () => {
+    reviewForm.reset();
+    setRatingPickerOnForm(DEFAULT_PICKER_VALUE);
 
     addReviewButton.classList.toggle("hidden");
     reviewForm.classList.toggle("hidden");
@@ -30,59 +70,25 @@ const render = async ({ productId }) => {
 
   addReviewButton.addEventListener("click", toggleReviewForm);
 
-  reviewForm.addEventListener("submit", (e) => {
+  reviewForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
 
-    addReview({
-      productId,
-      rating: parseInt(formData.get("rating"), 10),
-      description: formData.get("description"),
-    })
-      .then((addedReview) => {
-        toggleReviewForm();
-
-        reviewsContainer.prepend(reviewComponent(addedReview));
-
-        averageRatingContainer.replaceChildren(
-          productRating({
-            rating: addedReview.newAverageRating,
-          }),
-        );
-      })
-      .catch(() => {
-        alert("Failed to add review.");
+    try {
+      const addedReview = await addReview({
+        productId,
+        rating: parseInt(formData.get("rating"), 10),
+        description: formData.get("description"),
       });
+
+      toggleReviewForm();
+
+      insertReviews([addedReview], { prepend: true });
+      setProductRating(addedReview.newAverageRating);
+    } catch (e) {
+      alert("Failed to add review. Please try again.");
+    }
   });
-
-  const onRatingPickerClick = (pickedRating) => {
-    ratingFormItem.value = pickedRating;
-
-    ratingPicker.replaceChildren(
-      rating({ amount: pickedRating, click: onRatingPickerClick }),
-    );
-  };
-
-  ratingPicker.appendChild(
-    rating({ amount: ratingFormItem.value, click: onRatingPickerClick }),
-  );
-
-  document.title = product.name + " - " + document.title;
-
-  productTitle.appendChild(text(product.name));
-
-  const reviewsContainer = document.querySelector("#reviews-list");
-
-  product.reviews.forEach((review) => {
-    const reviewNode = reviewComponent(review);
-    reviewsContainer.appendChild(reviewNode);
-  });
-
-  averageRatingContainer.appendChild(
-    productRating({
-      rating: product.averageRating,
-    }),
-  );
 
   app.classList.remove("hidden");
 };
