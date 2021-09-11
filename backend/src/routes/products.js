@@ -48,6 +48,7 @@ productsRouter.get("/:productId", async (req, res) => {
         as: "reviews",
       },
     ],
+    order: [["reviews", "createdAt", "DESC"]],
   });
 
   res.send(product);
