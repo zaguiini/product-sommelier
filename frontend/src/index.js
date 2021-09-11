@@ -1,12 +1,25 @@
-const app = document.querySelector("#app");
+import "./styles.scss";
+import { rating } from "./components/rating";
+import { ratingNumber } from "./components/ratingNumber";
+import { text } from "./dom";
 
-function component() {
-  const element = document.createElement("div");
+const render = () => {
+  const app = document.querySelector("#app");
+  const averageRatingContainer = document.querySelector("#average-rating");
+  const productTitle = document.querySelector("#product-title");
 
-  // Lodash, currently included via a script, is required for this line to work
-  element.innerHTML = "News!";
+  const productName = "My product...";
 
-  return element;
-}
+  document.title = productName + " - " + document.title;
 
-app.appendChild(component());
+  productTitle.appendChild(text(productName));
+
+  const averageRating = 3;
+
+  averageRatingContainer.appendChild(ratingNumber({ rating: averageRating }));
+  averageRatingContainer.appendChild(rating({ amount: averageRating }));
+
+  app.classList.remove("hidden");
+};
+
+render();
