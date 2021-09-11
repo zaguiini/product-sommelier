@@ -1,5 +1,6 @@
 const path = require("path");
 
+const Dotenv = require("dotenv-webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
@@ -17,6 +18,9 @@ module.exports = {
     clean: true,
   },
   plugins: [
+    new Dotenv({
+      file: ".env",
+    }),
     new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(rootFolder, "public", "index.html"),
