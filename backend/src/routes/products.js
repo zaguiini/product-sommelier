@@ -58,7 +58,7 @@ productsRouter.post("/:productId/reviews", async (req, res) => {
   const review = await Review.create({
     productId: req.params.productId,
     rating: req.body.rating,
-    description: req.body.description,
+    description: req.body.description.trim(),
   });
 
   const { coalesce: newAverageRating } = await db.sequelize.query(

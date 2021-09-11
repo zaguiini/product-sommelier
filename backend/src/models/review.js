@@ -18,7 +18,15 @@ module.exports = (sequelize, DataTypes) => {
     {
       productId: DataTypes.INTEGER,
       rating: DataTypes.FLOAT,
-      description: DataTypes.TEXT,
+      description: {
+        type: DataTypes.TEXT,
+        validate: {
+          len: {
+            args: [30],
+            msg: "Minimum 30 characters required",
+          },
+        },
+      },
     },
     {
       sequelize,
