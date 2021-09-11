@@ -1,14 +1,9 @@
 import { productItem } from "./components/productItem";
+import { fetchProducts } from "./services/products";
 import "./styles.scss";
 
-const render = () => {
-  const products = [
-    {
-      id: 1,
-      name: "The Minimalist Entrepreneur",
-      averageRating: 3,
-    },
-  ];
+const render = async () => {
+  const products = await fetchProducts();
 
   const app = document.querySelector("#app");
   const productsList = document.querySelector("#products-list");
