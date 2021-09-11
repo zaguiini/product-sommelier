@@ -1,10 +1,10 @@
 import "./styles.scss";
 import { rating } from "./components/rating";
 import { getProductId } from "./getProductId";
-import { ratingNumber } from "./components/ratingNumber";
 import { review as reviewComponent } from "./components/review";
 import { text } from "./dom";
 import { addReview, fetchProduct } from "./services/products";
+import { productRating } from "./components/productRating";
 
 const render = async ({ productId }) => {
   const product = await fetchProduct({ id: productId });
@@ -67,9 +67,10 @@ const render = async ({ productId }) => {
   });
 
   averageRatingContainer.appendChild(
-    ratingNumber({ rating: product.averageRating }),
+    productRating({
+      rating: product.averageRating,
+    }),
   );
-  averageRatingContainer.appendChild(rating({ amount: product.averageRating }));
 
   app.classList.remove("hidden");
 };
