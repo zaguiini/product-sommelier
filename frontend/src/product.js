@@ -1,10 +1,14 @@
 import "./styles.scss";
 import { rating } from "./components/rating";
+import { getProductId } from "./getProductId";
 import { ratingNumber } from "./components/ratingNumber";
 import { review as reviewComponent } from "./components/review";
 import { text } from "./dom";
+import { fetchProduct } from "./services/products";
 
-const render = () => {
+const render = async ({ productId }) => {
+  const product = await fetchProduct({ id: productId });
+
   const app = document.querySelector("#app");
   const averageRatingContainer = document.querySelector("#average-rating");
   const addReviewButton = document.querySelector("#add-review");
@@ -42,36 +46,25 @@ const render = () => {
     rating({ amount: ratingFormItem.value, click: onRatingPickerClick }),
   );
 
-  const productName = "My product...";
+  document.title = product.name + " - " + document.title;
 
-  document.title = productName + " - " + document.title;
-
-  productTitle.appendChild(text(productName));
-
-  const averageRating = 3;
-
-  const reviews = [
-    {
-      rating: 4,
-      description: "book was full of fluff",
-    },
-    {
-      rating: 3,
-      description: "book was full of fluff",
-    },
-  ];
+  productTitle.appendChild(text(product.name));
 
   const reviewsContainer = document.querySelector("#reviews-list");
 
-  reviews.forEach((review) => {
+  product.reviews.forEach((review) => {
     const reviewNode = reviewComponent(review);
     reviewsContainer.appendChild(reviewNode);
   });
 
-  averageRatingContainer.appendChild(ratingNumber({ rating: averageRating }));
-  averageRatingContainer.appendChild(rating({ amount: averageRating }));
+  averageRatingContainer.appendChild(
+    ratingNumber({ rating: product.averageRating }),
+  );
+  averageRatingContainer.appendChild(rating({ amount: product.averageRating }));
 
   app.classList.remove("hidden");
 };
 
-render();
+render({
+  productId: getProductId(),
+});
