@@ -4,7 +4,7 @@ import { getProductId } from "./getProductId";
 import { ratingNumber } from "./components/ratingNumber";
 import { review as reviewComponent } from "./components/review";
 import { text } from "./dom";
-import { fetchProduct } from "./services/products";
+import { addReview, fetchProduct } from "./services/products";
 
 const render = async ({ productId }) => {
   const product = await fetchProduct({ id: productId });
@@ -17,19 +17,28 @@ const render = async ({ productId }) => {
   const ratingPicker = document.querySelector("#rating-picker");
   const ratingFormItem = document.querySelector("#review-form [name=rating]");
 
-  addReviewButton.addEventListener("click", () => {
-    addReviewButton.classList.add("hidden");
-    reviewForm.classList.remove("hidden");
-  });
+  const toggleReviewForm = () => {
+    addReviewButton.classList.toggle("hidden");
+    reviewForm.classList.toggle("hidden");
+  };
+
+  addReviewButton.addEventListener("click", toggleReviewForm);
 
   reviewForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
 
-    console.log({
+    addReview({
+      productId,
       rating: parseInt(formData.get("rating"), 10),
       description: formData.get("description"),
-    });
+    })
+      .then((addedReview) => {
+        toggleReviewForm();
+      })
+      .catch(() => {
+        alert("Failed to add review.");
+      });
   });
 
   const onRatingPickerClick = (pickedRating) => {
