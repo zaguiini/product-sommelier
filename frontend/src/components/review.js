@@ -4,13 +4,13 @@ import { rating as ratingComponent } from "./rating";
 export const review = ({ rating, description }) =>
   el(
     "li",
-    { class: "flex mb-4" },
-    ratingComponent({ amount: rating }),
+    { class: "mb-6 leading-6" },
+    el("div", { class: "absolute" }, ratingComponent({ amount: rating })),
     el(
-      "div",
-      { class: "ml-4" },
-      el("span", { class: "font-bold" }, text(rating)),
-      text(", "),
-      el("span", { class: "text-gray-500" }, text(description)),
+      "span",
+      { class: "ml-2 font-bold", style: "padding-left: 7.5rem" },
+      text(rating),
     ),
+    text(", "),
+    el("span", { class: "text-gray-500" }, text(description)),
   );
