@@ -10,11 +10,27 @@ const render = () => {
   const addReviewButton = document.querySelector("#add-review");
   const reviewForm = document.querySelector("#review-form");
   const productTitle = document.querySelector("#product-title");
+  const ratingPicker = document.querySelector("#rating-picker");
+  const ratingFormItem = document.querySelector("#review-form [name=rating]");
 
   addReviewButton.addEventListener("click", () => {
     addReviewButton.classList.add("hidden");
     reviewForm.classList.remove("hidden");
   });
+
+  const onRatingPickerClick = (pickedRating) => {
+    ratingFormItem.value = pickedRating;
+
+    ratingPicker.firstChild.remove();
+
+    ratingPicker.appendChild(
+      rating({ amount: pickedRating, click: onRatingPickerClick }),
+    );
+  };
+
+  ratingPicker.appendChild(
+    rating({ amount: ratingFormItem.value, click: onRatingPickerClick }),
+  );
 
   const productName = "My product...";
 
