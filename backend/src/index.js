@@ -1,11 +1,12 @@
 const express = require("express");
+const cors = require("cors");
 const { setupRoutes } = require("./routes");
 
 const setup = async () => {
   const app = express();
 
   app.use(express.static(__dirname + "/../../frontend/dist"));
-
+  app.use(cors());
   app.use(express.json());
 
   setupRoutes(app);
