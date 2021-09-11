@@ -18,6 +18,16 @@ const render = () => {
     reviewForm.classList.remove("hidden");
   });
 
+  reviewForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+
+    console.log({
+      rating: parseInt(formData.get("rating"), 10),
+      description: formData.get("description"),
+    });
+  });
+
   const onRatingPickerClick = (pickedRating) => {
     ratingFormItem.value = pickedRating;
 
