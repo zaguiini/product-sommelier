@@ -18,6 +18,12 @@ const render = async ({ productId }) => {
   const ratingFormItem = document.querySelector("#review-form [name=rating]");
 
   const toggleReviewForm = () => {
+    reviewForm.reset();
+
+    ratingPicker.replaceChildren(
+      rating({ amount: ratingFormItem.value, click: onRatingPickerClick }),
+    );
+
     addReviewButton.classList.toggle("hidden");
     reviewForm.classList.toggle("hidden");
   };
