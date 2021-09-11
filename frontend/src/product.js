@@ -58,9 +58,7 @@ const render = async ({ productId }) => {
   const onRatingPickerClick = (pickedRating) => {
     ratingFormItem.value = pickedRating;
 
-    ratingPicker.firstChild.remove();
-
-    ratingPicker.appendChild(
+    ratingPicker.replaceChildren(
       rating({ amount: pickedRating, click: onRatingPickerClick }),
     );
   };
