@@ -1,4 +1,5 @@
 const sequelize = require("sequelize");
+const io = require("socket.io");
 const db = require("../models");
 const express = require("express");
 const { Product, Review } = require("../models");
@@ -73,7 +74,11 @@ productsRouter.post("/:productId/reviews", async (req, res) => {
     },
   );
 
-  res.send({ ...review.toJSON(), newAverageRating });
+  const payload = { ...review.toJSON(), newAverageRating };
+
+  req.webSocket.to(req.params.productId).emit("message", payload);
+
+  res.send(payload);
 });
 
 module.exports.productsRouter = productsRouter;
