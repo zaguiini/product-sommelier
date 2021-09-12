@@ -1,47 +1,24 @@
-import { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
-
-import { ProductItem } from "./components/ProductItem";
-import { fetchProducts } from "./services/products";
 import "./styles.scss";
+import ReactDOM from "react-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Products } from "./pages/Products";
+import { Product } from "./pages/Product";
 
-const Products = () => {
-  const [products, setProducts] = useState([]);
+const appContainer = document.querySelector("#app");
 
-  useEffect(() => {
-    fetchProducts()
-      .then((fetchedProducts) => {
-        setProducts(fetchedProducts);
-      })
-      .catch(() => {
-        alert("Failed to fetch products");
-      });
-  }, []);
-
+const App = () => {
   return (
-    <div className="flex justify-center">
-      <main className="flex-1 max-w-2xl mt-24 px-4 w-full">
-        <h1 className="text-4xl font-bold">Products</h1>
-        <hr className="my-6" />
-        <ul id="products-list" className="mt-3">
-          {products.map(({ id, name, averageRating }) => (
-            <ProductItem
-              key={id}
-              name={name}
-              href={`/product.html?id=${id}`}
-              averageRating={averageRating}
-            />
-          ))}
-        </ul>
-      </main>
-    </div>
+    <Router>
+      <Switch>
+        <Route exact path="/product(.html)?">
+          <Product />
+        </Route>
+        <Route exact path="/">
+          <Products />
+        </Route>
+      </Switch>
+    </Router>
   );
 };
 
-const render = async () => {
-  const app = document.querySelector("#app");
-
-  ReactDOM.render(<Products />, app);
-};
-
-render();
+ReactDOM.render(<App />, appContainer);

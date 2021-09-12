@@ -1,18 +1,19 @@
-import "./styles.scss";
-import ReactDOM from "react-dom";
-import { getProductId } from "./getProductId";
-import { addReview, fetchProduct } from "./services/products";
-import { ReviewForm } from "./components/ReviewForm";
-import { ReviewList } from "./components/ReviewList";
-import { ProductInformation } from "./components/ProductInformation";
 import { useEffect, useReducer, useState } from "react";
+import { addReview, fetchProduct } from "../services/products";
+import { ReviewForm } from "../components/ReviewForm";
+import { ReviewList } from "../components/ReviewList";
+import { ProductInformation } from "../components/ProductInformation";
 import {
   INSERT_PRODUCT_ACTION,
   INSERT_REVIEW_ACTION,
   productReducer,
-} from "./productReducer";
+} from "../productReducer";
+import { useLocation } from "react-router";
+import { getProductId } from "../getProductId";
 
-const Product = ({ id }) => {
+export const Product = () => {
+  const location = useLocation();
+  const id = getProductId(location.search);
   const [product, dispatch] = useReducer(productReducer, null);
   const [showReviewForm, setShowReviewForm] = useState(false);
 
@@ -73,13 +74,3 @@ const Product = ({ id }) => {
     </div>
   );
 };
-
-const render = async ({ productId }) => {
-  const app = document.querySelector("#app");
-
-  ReactDOM.render(<Product id={productId} />, app);
-};
-
-render({
-  productId: getProductId(),
-});

@@ -9,7 +9,6 @@ const rootFolder = path.resolve(__dirname, "frontend");
 module.exports = {
   entry: {
     main: "./frontend/src/index.js",
-    product: "./frontend/src/product.js",
   },
   output: {
     path: path.resolve(rootFolder, "dist"),
@@ -26,11 +25,6 @@ module.exports = {
       template: path.resolve(rootFolder, "public", "index.html"),
       filename: "index.html",
       chunks: ["main"],
-    }),
-    new HtmlWebpackPlugin({
-      template: path.resolve(rootFolder, "public", "product.html"),
-      filename: "product.html",
-      chunks: ["product"],
     }),
   ],
   module: {
@@ -66,6 +60,10 @@ module.exports = {
       directory: path.join(rootFolder, "public"),
     },
     compress: true,
-    port: 9000,
+    port: process.env.FRONTEND_PORT,
+    historyApiFallback: {
+      main: "index.html",
+      disableDotRule: true,
+    },
   },
 };

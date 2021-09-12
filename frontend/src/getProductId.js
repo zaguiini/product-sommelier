@@ -1,5 +1,5 @@
-export const getProductId = () => {
-  const urlSearchParams = new URLSearchParams(window.location.search);
+export const getProductId = (queryParams) => {
+  const urlSearchParams = new URLSearchParams(queryParams);
 
   return urlSearchParams.get("id");
 };
