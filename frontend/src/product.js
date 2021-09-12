@@ -11,10 +11,11 @@ const Product = ({
   id,
   name,
   averageRating: initialAverageRating,
-  onReviewSubmission,
+  reviews: initialReviews,
 }) => {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [averageRating, setAverageRating] = useState(initialAverageRating);
+  const [reviews, setReviews] = useState(initialReviews);
 
   const submitReview = async (reviewForSubmission) => {
     try {
@@ -23,7 +24,7 @@ const Product = ({
         productId: id,
       });
 
-      onReviewSubmission([addedReview], { prependNewItems: true });
+      setReviews((existingReviews) => [addedReview, ...existingReviews]);
       setAverageRating(addedReview.newAverageRating);
       setShowReviewForm(false);
     } catch (e) {
@@ -36,25 +37,19 @@ const Product = ({
   };
 
   return (
-    <>
-      <ProductInformation
-        name={name}
-        averageRating={averageRating}
-        showAddReviewButton={!showReviewForm}
-        onAddReviewClick={handleAddReviewClick}
-      />
-      <hr className="my-6" />
-      {showReviewForm && <ReviewForm onSubmit={submitReview} />}
-    </>
-  );
-};
-
-const insertReviews = (reviews, { prependNewItems = false } = {}) => {
-  const reviewsContainer = document.querySelector("#reviews-list");
-
-  ReactDOM.render(
-    <ReviewList newReviews={reviews} prependNewItems={prependNewItems} />,
-    reviewsContainer,
+    <div className="flex justify-center">
+      <div className="flex-1 max-w-2xl mt-24 px-4 w-full">
+        <ProductInformation
+          name={name}
+          averageRating={averageRating}
+          showAddReviewButton={!showReviewForm}
+          onAddReviewClick={handleAddReviewClick}
+        />
+        <hr className="my-6" />
+        {showReviewForm && <ReviewForm onSubmit={submitReview} />}
+        <ReviewList reviews={reviews} />
+      </div>
+    </div>
   );
 };
 
@@ -64,23 +59,16 @@ const render = async ({ productId }) => {
   document.title = product.name + " - " + document.title;
 
   const app = document.querySelector("#app");
-  const productInformationContainer = document.querySelector(
-    "#product-information",
-  );
-
-  insertReviews(product.reviews);
 
   ReactDOM.render(
     <Product
       id={product.id}
       name={product.name}
       averageRating={product.averageRating}
-      onReviewSubmission={insertReviews}
+      reviews={product.reviews}
     />,
-    productInformationContainer,
+    app,
   );
-
-  app.classList.remove("hidden");
 };
 
 render({
