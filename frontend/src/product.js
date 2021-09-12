@@ -5,17 +5,31 @@ import { addReview, fetchProduct } from "./services/products";
 import { ReviewForm } from "./components/ReviewForm";
 import { ReviewList } from "./components/ReviewList";
 import { ProductInformation } from "./components/ProductInformation";
-import { useState } from "react";
+import { useEffect, useReducer, useState } from "react";
+import {
+  INSERT_PRODUCT_ACTION,
+  INSERT_REVIEW_ACTION,
+  productReducer,
+} from "./productReducer";
 
-const Product = ({
-  id,
-  name,
-  averageRating: initialAverageRating,
-  reviews: initialReviews,
-}) => {
+const Product = ({ id }) => {
+  const [product, dispatch] = useReducer(productReducer, null);
   const [showReviewForm, setShowReviewForm] = useState(false);
-  const [averageRating, setAverageRating] = useState(initialAverageRating);
-  const [reviews, setReviews] = useState(initialReviews);
+
+  useEffect(() => {
+    fetchProduct({ id })
+      .then((product) => {
+        document.title = product.name + " - " + document.title;
+
+        dispatch({
+          type: INSERT_PRODUCT_ACTION,
+          payload: product,
+        });
+      })
+      .catch(() => {
+        alert("Failed to fetch product.");
+      });
+  }, []);
 
   const submitReview = async (reviewForSubmission) => {
     try {
@@ -24,8 +38,11 @@ const Product = ({
         productId: id,
       });
 
-      setReviews((existingReviews) => [addedReview, ...existingReviews]);
-      setAverageRating(addedReview.newAverageRating);
+      dispatch({
+        type: INSERT_REVIEW_ACTION,
+        payload: addedReview,
+      });
+
       setShowReviewForm(false);
     } catch (e) {
       alert("Failed to add review. Please try again.");
@@ -36,39 +53,31 @@ const Product = ({
     setShowReviewForm(true);
   };
 
+  if (!product) {
+    return null;
+  }
+
   return (
     <div className="flex justify-center">
       <div className="flex-1 max-w-2xl mt-24 px-4 w-full">
         <ProductInformation
-          name={name}
-          averageRating={averageRating}
+          name={product.name}
+          averageRating={product.averageRating}
           showAddReviewButton={!showReviewForm}
           onAddReviewClick={handleAddReviewClick}
         />
         <hr className="my-6" />
         {showReviewForm && <ReviewForm onSubmit={submitReview} />}
-        <ReviewList reviews={reviews} />
+        <ReviewList reviews={product.reviews} />
       </div>
     </div>
   );
 };
 
 const render = async ({ productId }) => {
-  const product = await fetchProduct({ id: productId });
-
-  document.title = product.name + " - " + document.title;
-
   const app = document.querySelector("#app");
 
-  ReactDOM.render(
-    <Product
-      id={product.id}
-      name={product.name}
-      averageRating={product.averageRating}
-      reviews={product.reviews}
-    />,
-    app,
-  );
+  ReactDOM.render(<Product id={productId} />, app);
 };
 
 render({
