@@ -8,6 +8,10 @@ export const ReviewForm = ({ onSubmit }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (description.length < 30) {
+      return alert("Description must be at least 30 characters.");
+    }
+
     onSubmit({
       rating,
       description,
@@ -26,13 +30,12 @@ export const ReviewForm = ({ onSubmit }) => {
       </div>
       <textarea
         required
-        minLength="30"
         name="description"
         className="self-start w-full my-4"
-        placeholder="Tell us what you think about it..."
+        placeholder="Tell us what you think about it... More than 30 characters, please."
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-      ></textarea>
+      />
       <button className="px-4 py-2 bg-blue-600 rounded-md text-white outline-none focus:ring-4 flex self-start">
         Submit review
       </button>
