@@ -1,18 +1,10 @@
 import "./styles.scss";
 import ReactDOM from "react-dom";
 import { getProductId } from "./getProductId";
-import { text } from "./dom";
 import { addReview, fetchProduct } from "./services/products";
-import { ProductRating } from "./components/ProductRating";
 import { ReviewForm } from "./components/ReviewForm";
 import { ReviewList } from "./components/ReviewList";
-
-const setProductTitle = (title) => {
-  const productTitle = document.querySelector("#product-title");
-
-  document.title = title + " - " + document.title;
-  productTitle.appendChild(text(title));
-};
+import { ProductInformation } from "./components/ProductInformation";
 
 const insertReviews = (reviews, { prependNewItems = false } = {}) => {
   const reviewsContainer = document.querySelector("#reviews-list");
@@ -23,20 +15,15 @@ const insertReviews = (reviews, { prependNewItems = false } = {}) => {
   );
 };
 
-const setProductRating = (averageRating) => {
-  const averageRatingContainer = document.querySelector("#average-rating");
-
-  ReactDOM.render(
-    <ProductRating rating={averageRating} />,
-    averageRatingContainer,
-  );
-};
-
 const render = async ({ productId }) => {
   const product = await fetchProduct({ id: productId });
 
+  document.title = product.name + " - " + document.title;
+
   const app = document.querySelector("#app");
-  const addReviewButton = document.querySelector("#add-review");
+  const productInformationContainer = document.querySelector(
+    "#product-information",
+  );
   const reviewForm = document.querySelector("#review-form");
 
   const submitReview = async (reviewForSubmission) => {
@@ -49,14 +36,21 @@ const render = async ({ productId }) => {
       toggleReviewForm();
 
       insertReviews([addedReview], { prependNewItems: true });
-      setProductRating(addedReview.newAverageRating);
+
+      ReactDOM.render(
+        <ProductInformation
+          name={product.name}
+          averageRating={addedReview.newAverageRating}
+          onAddReviewClick={toggleReviewForm}
+          shouldShowAddReviewButton
+        />,
+        productInformationContainer,
+      );
     } catch (e) {
       alert("Failed to add review. Please try again.");
     }
   };
 
-  setProductTitle(product.name);
-  setProductRating(product.averageRating);
   insertReviews(product.reviews);
 
   const toggleReviewForm = () => {
@@ -67,11 +61,17 @@ const render = async ({ productId }) => {
       ReactDOM.unmountComponentAtNode(reviewForm);
       reviewForm.classList.add("hidden");
     }
-
-    addReviewButton.classList.toggle("hidden");
   };
 
-  addReviewButton.addEventListener("click", toggleReviewForm);
+  ReactDOM.render(
+    <ProductInformation
+      name={product.name}
+      averageRating={product.averageRating}
+      onAddReviewClick={toggleReviewForm}
+      shouldShowAddReviewButton
+    />,
+    productInformationContainer,
+  );
 
   app.classList.remove("hidden");
 };
