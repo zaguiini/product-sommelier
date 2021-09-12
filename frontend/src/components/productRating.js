@@ -1,16 +1,20 @@
+import ReactDOM from "react-dom";
 import { el } from "../dom";
+import { Rating } from "./Rating";
 
 import { ratingNumber } from "./ratingNumber";
-import { rating as ratingComponent } from "./rating";
 
 export const productRating = ({ rating, small }) => {
-  return el(
-    "div",
-    { class: "flex" },
+  const container = el("div", { class: "flex" });
+
+  ReactDOM.render(<Rating amount={rating} />, container);
+
+  container.prepend(
     ratingNumber({
       rating: rating % 1 === 0 ? rating : rating.toFixed(2),
       small,
     }),
-    ratingComponent({ amount: rating }),
   );
+
+  return container;
 };

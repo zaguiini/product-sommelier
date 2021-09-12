@@ -1,24 +1,8 @@
-import { useEffect, useRef } from "react";
-import { rating } from "./rating";
+import { Rating } from "./Rating";
 
-export const RatingPicker = ({ name, onChange, value }) => {
-  const ratingNode = useRef();
-
-  useEffect(() => {
-    if (ratingNode.current) {
-      ratingNode.current.replaceChildren(
-        rating({
-          amount: value,
-          click: onChange,
-        }),
-      );
-    }
-  }, [onChange, value]);
-
-  return (
-    <>
-      <input type="hidden" name={name} value={value} />
-      <div ref={ratingNode} />
-    </>
-  );
-};
+export const RatingPicker = ({ name, onChange, value }) => (
+  <>
+    <input type="hidden" name={name} value={value} />
+    <Rating onClick={onChange} amount={value} />
+  </>
+);
