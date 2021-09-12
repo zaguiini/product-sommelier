@@ -8,6 +8,7 @@
     "backend:db:cli": "node -r dotenv/config node_modules/.bin/sequelize",
     "backend:dev:start-db": "docker-compose --env-file .env up -d",
     "backend:dev:start-server": "nodemon -r dotenv/config backend/src/index.js",
+    "prebackend:serve": "yarn frontend:build",
     "backend:serve": "node -r dotenv/config backend/src/index.js",
     "frontend:dev": "node -r dotenv/config node_modules/.bin/webpack serve --mode development --open",
     "frontend:build": "NODE_ENV=production node -r dotenv/config node_modules/.bin/webpack --mode production"
