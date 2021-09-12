@@ -36,6 +36,13 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.jsx?$/,
+        exclude: /node-modules/,
+        use: {
+          loader: "babel-loader",
+        },
+      },
+      {
         test: /\.s?css$/i,
         include: path.resolve(rootFolder, "src"),
         use: [
@@ -48,6 +55,11 @@ module.exports = {
         ],
       },
     ],
+  },
+  optimization: {
+    splitChunks: {
+      chunks: "all",
+    },
   },
   devServer: {
     static: {
