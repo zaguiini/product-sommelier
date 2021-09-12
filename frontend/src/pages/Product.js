@@ -1,4 +1,5 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
+import io from "socket.io-client";
 import { addReview, fetchProduct } from "../services/products";
 import { ReviewForm } from "../components/ReviewForm";
 import { ReviewList } from "../components/ReviewList";
@@ -12,10 +13,32 @@ import { useLocation } from "react-router";
 import { getProductId } from "../getProductId";
 
 export const Product = () => {
+  const socket = useRef();
   const location = useLocation();
   const id = getProductId(location.search);
   const [product, dispatch] = useReducer(productReducer, null);
   const [showReviewForm, setShowReviewForm] = useState(false);
+
+  useEffect(() => {
+    socket.current = io(process.env.API_URI || undefined);
+
+    const joinRoom = () => {
+      socket.current.emit("room", id);
+
+      socket.current.on("message", (addedReview) => {
+        dispatch({
+          type: INSERT_REVIEW_ACTION,
+          payload: addedReview,
+        });
+      });
+    };
+
+    socket.current.on("connect", joinRoom);
+
+    return () => {
+      socket.current.off("connect", joinRoom);
+    };
+  }, [id]);
 
   useEffect(() => {
     fetchProduct({ id })
@@ -39,10 +62,12 @@ export const Product = () => {
         productId: id,
       });
 
-      dispatch({
-        type: INSERT_REVIEW_ACTION,
-        payload: addedReview,
-      });
+      if (socket.current.disconnected) {
+        dispatch({
+          type: INSERT_REVIEW_ACTION,
+          payload: addedReview,
+        });
+      }
 
       setShowReviewForm(false);
     } catch (e) {
