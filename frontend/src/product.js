@@ -4,7 +4,7 @@ import { getProductId } from "./getProductId";
 import { review as reviewComponent } from "./components/review";
 import { text } from "./dom";
 import { addReview, fetchProduct } from "./services/products";
-import { productRating } from "./components/productRating";
+import { ProductRating } from "./components/ProductRating";
 import { ReviewForm } from "./components/ReviewForm";
 
 const setProductTitle = (title) => {
@@ -26,10 +26,9 @@ const insertReviews = (reviews, { prepend = false } = {}) => {
 const setProductRating = (averageRating) => {
   const averageRatingContainer = document.querySelector("#average-rating");
 
-  averageRatingContainer.replaceChildren(
-    productRating({
-      rating: averageRating,
-    }),
+  ReactDOM.render(
+    <ProductRating rating={averageRating} />,
+    averageRatingContainer,
   );
 };
 

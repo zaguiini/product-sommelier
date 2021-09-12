@@ -1,20 +1,17 @@
-import ReactDOM from "react-dom";
-import { el } from "../dom";
 import { Rating } from "./Rating";
 
-import { ratingNumber } from "./ratingNumber";
+export const ProductRating = ({ rating, small }) => {
+  const numberClassName = [
+    small ? "text-xl" : "text-3xl",
+    "mr-2 flex items-center",
+  ].join(" ");
 
-export const productRating = ({ rating, small }) => {
-  const container = el("div", { class: "flex" });
-
-  ReactDOM.render(<Rating amount={rating} />, container);
-
-  container.prepend(
-    ratingNumber({
-      rating: rating % 1 === 0 ? rating : rating.toFixed(2),
-      small,
-    }),
+  return (
+    <div className="flex">
+      <div className={numberClassName}>
+        {rating % 1 === 0 ? rating : rating.toFixed(2)}
+      </div>
+      <Rating amount={rating} />
+    </div>
   );
-
-  return container;
 };
