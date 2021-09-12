@@ -1,11 +1,11 @@
 import "./styles.scss";
 import ReactDOM from "react-dom";
 import { getProductId } from "./getProductId";
-import { review as reviewComponent } from "./components/review";
 import { text } from "./dom";
 import { addReview, fetchProduct } from "./services/products";
 import { ProductRating } from "./components/ProductRating";
 import { ReviewForm } from "./components/ReviewForm";
+import { ReviewList } from "./components/ReviewList";
 
 const setProductTitle = (title) => {
   const productTitle = document.querySelector("#product-title");
@@ -14,13 +14,13 @@ const setProductTitle = (title) => {
   productTitle.appendChild(text(title));
 };
 
-const insertReviews = (reviews, { prepend = false } = {}) => {
+const insertReviews = (reviews, { prependNewItems = false } = {}) => {
   const reviewsContainer = document.querySelector("#reviews-list");
 
-  reviews.forEach((review) => {
-    const reviewNode = reviewComponent(review);
-    reviewsContainer[prepend ? "prepend" : "appendChild"](reviewNode);
-  });
+  ReactDOM.render(
+    <ReviewList newReviews={reviews} prependNewItems={prependNewItems} />,
+    reviewsContainer,
+  );
 };
 
 const setProductRating = (averageRating) => {
@@ -48,7 +48,7 @@ const render = async ({ productId }) => {
 
       toggleReviewForm();
 
-      insertReviews([addedReview], { prepend: true });
+      insertReviews([addedReview], { prependNewItems: true });
       setProductRating(addedReview.newAverageRating);
     } catch (e) {
       alert("Failed to add review. Please try again.");
